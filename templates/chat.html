@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Chatbot Page</h1>
+    <p>Welcome, <strong>{{ name }}</strong>!</p>
+</div>
+
+<div class="panel panel-default" style="max-width: 600px; margin: 0 auto;">
+    <div class="panel-heading">Interactive Chat</div>
+    <div class="panel-body" id="chat-box" style="height: 300px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; margin-bottom: 15px;">
+        <p><em>Bot: Hello {{ name }}! Ask me something or tell me your name/likes.</em></p>
+    </div>
+    <div class="panel-footer">
+        <form id="chat-form" onsubmit="sendMessage(event)">
+            <div class="input-group">
+                <input type="text" id="user-input" class="form-control" placeholder="Type a message..." required>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">Send</button>
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div style="margin-top: 20px; text-align: center;">
+    <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+</div>
+
+<script>
+async function sendMessage(event) {
+    event.preventDefault();
+    const input = document.getElementById('user-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const chatBox = document.getElementById('chat-box');
+    chatBox.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+    input.value = '';
+
+    const response = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message })
+    });
+
+    const data = await response.json();
+    chatBox.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+{% endblock %}
