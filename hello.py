@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask import Flask, render_template, session, redirect, url_for, flash
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
+from flask_moment import Moment
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Email
 
@@ -10,6 +11,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
 
 bootstrap = Bootstrap(app)
+moment = Moment(app)
 
 class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
